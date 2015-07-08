@@ -1,0 +1,43 @@
+django:
+  build: ./django
+  command: /usr/local/bin/gunicorn test_django.wsgi -w 3 -b :8000 --reload -k gevent
+  env_file: .env
+  # Link so that we can talk to PostgreSQL and Redis easily.
+  links:
+    - postgres:postgres
+    - redis:redis
+  ports:
+    - "8000:8000"
+  restart: always
+  # Make sure this volume is defined explicitly so that the Nginx container
+  # can mount it as well using `volumes_from`.
+  volumes:
+    - ./django/static:/opt/app/static
+
+nginx:
+  build: ./nginx
+  links:
+    - django:django
+  ports:
+    - "8080:80"
+  restart: always
+  # Mount volumes that the `django` container has defined.
+  volumes_from:
+    - django
+
+postgres:
+  env_file: .env
+  image: postgres:9.4
+  ports:
+    - "5432:5432"
+  restart: always
+  # Excluding the PostgreSQL data directory helps avoid the versioned file
+  # system, which provides better performance.
+  volumes:
+    - /var/lib/postgresql
+
+redis:
+  image: redis:2.8
+  ports:
+    - "6379:6379"
+  restart: always
