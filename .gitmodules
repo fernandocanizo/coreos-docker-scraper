@@ -1,0 +1,3 @@
+[submodule "scraperapps"]
+	path = scraperapps
+	url = git@github.com:fernandocanizo/scraperapps.git
