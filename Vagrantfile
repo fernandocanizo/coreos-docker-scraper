@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "core" do |core|
-    core.vm.hostname = "docker-django-example"
+    core.vm.hostname = "scraper"
 
     core.vm.provider "virtualbox" do |v|
       v.memory = 1024

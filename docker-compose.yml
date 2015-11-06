@@ -1,6 +1,5 @@
-django:
-  build: ./django
-  command: /usr/local/bin/gunicorn test_django.wsgi -w 3 -b :8000 --reload -k gevent
+scraperapps:
+  build: ./scraperapps
   env_file: .env
   # Link so that we can talk to PostgreSQL and Redis easily.
   links:
@@ -12,18 +11,18 @@ django:
   # Make sure this volume is defined explicitly so that the Nginx container
   # can mount it as well using `volumes_from`.
   volumes:
-    - ./django/static:/opt/app/static
+    - ./scraperapps/scraper/static:/opt/app/static
 
 nginx:
   build: ./nginx
   links:
-    - django:django
+    - scraperapps:scraperapps
   ports:
     - "8080:80"
   restart: always
-  # Mount volumes that the `django` container has defined.
+  # Mount volumes that the `scraperapps` container has defined.
   volumes_from:
-    - django
+    - scraperapps
 
 postgres:
   env_file: .env
