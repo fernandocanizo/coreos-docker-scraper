@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
 
     core.vm.network :private_network, ip: "172.17.8.100"
 
-    [5432, 6379, 8000, 8080].each do |port|
+    [55432, 56379, 58000, 58080].each do |port|
       core.vm.network "forwarded_port", guest: port, host: port
     end
 
